@@ -37,11 +37,17 @@ describe('add graoh', () => {
     expect(maxTripExact).toEqual(3);
   });
 
-  it.only('should find the length of the shortest route in distance', () => {
+  it('should find the length of the shortest route in distance', () => {
     const shortestRoute = graph.getShortestRoute('A', 'C');
     const shortestRoute2 = graph.getShortestRoute('B', 'B');
 
     expect(shortestRoute).toEqual(9);
     expect(shortestRoute2).toEqual(9);
+  });
+
+  it('should find the amount of routes under given distance', () => {
+    const route1 = graph.getNumRouteDistance('C', 'C', 30);
+
+    expect(route1).toEqual(7);
   });
 });

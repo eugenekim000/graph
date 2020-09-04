@@ -25,7 +25,6 @@ export class Graph {
         totalDistance = -1;
         break;
       }
-
       totalDistance += nodeDistance;
       index++;
     }
@@ -102,7 +101,6 @@ export class Graph {
 
     while (queue.length > 0) {
       let nextQueue: (string | number)[][] = [];
-      console.log(queue, 'this is a qeue');
       for (let i = 0; i < queue.length; i++) {
         let currentRoute = queue[i][0];
         let routeDistance = queue[i][1];
@@ -130,15 +128,66 @@ export class Graph {
           distance[index],
           currentRoute,
         ]);
-
-        console.log(neighbors);
-
         nextQueue = [...nextQueue, ...neighbors];
       }
       queue = nextQueue;
     }
 
     return shortestRoute === Infinity ? 'NO SUCH ROUTE' : shortestRoute;
+  }
+
+  getNumRouteDistance(
+    start: string,
+    finish: string,
+    maxDistance: number
+  ): number | string {
+    if (!this.graphDictionary[start]) return 'NO SUCH ROUTE';
+    const initialRoutes = Object.entries(
+      this.graphDictionary[start].outbound
+    ).map(routes => [...routes, start]);
+
+    let queue = initialRoutes;
+    let visitedHistory: { [key: string]: boolean } = {};
+
+    while (queue.length > 0) {
+      let nextQueue: (string | number)[][] = [];
+      for (let i = 0; i < queue.length; i++) {
+        let currentRoute = queue[i][0];
+        let routeDistance = queue[i][1];
+        let parentRoute = queue[i][2];
+
+        if (routeDistance >= maxDistance) continue;
+
+        let newRoute = parentRoute.toString() + currentRoute;
+
+        if (currentRoute === finish) {
+          visitedHistory[newRoute] = true;
+        }
+
+        const locations = Object.keys(
+          this.graphDictionary[currentRoute].outbound
+        );
+
+        const distance = Object.values(
+          this.graphDictionary[currentRoute].outbound
+        ).map(value => value + Number(routeDistance));
+
+        const neighbors = locations.map((location, index) => [
+          location,
+          distance[index],
+          newRoute,
+        ]);
+
+        nextQueue = [...nextQueue, ...neighbors];
+      }
+      queue = nextQueue;
+    }
+
+    const historyItems = Object.keys(visitedHistory).filter(
+      key => key[key.length - 1] === finish
+    ).length;
+
+    return historyItems === 0 ? 'NO SUCH ROUTE' : historyItems;
   }
 }
 
