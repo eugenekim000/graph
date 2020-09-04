@@ -38,10 +38,10 @@ describe('add graoh', () => {
   });
 
   it.only('should find the length of the shortest route in distance', () => {
-    //const shortestRoute = graph.getShortestRoute('A', 'C');
+    const shortestRoute = graph.getShortestRoute('A', 'C');
     const shortestRoute2 = graph.getShortestRoute('B', 'B');
 
-    //expect(shortestRoute).toEqual(9);
+    expect(shortestRoute).toEqual(9);
     expect(shortestRoute2).toEqual(9);
   });
 });

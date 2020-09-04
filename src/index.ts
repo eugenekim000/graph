@@ -117,17 +117,13 @@ export class Graph {
           continue;
         }
 
-        const parentRouteDistance = this.graphDictionary[parentRoute].outbound[
-          currentRoute
-        ]; //2
-
         const locations = Object.keys(
           this.graphDictionary[currentRoute].outbound
         );
 
         const distance = Object.values(
           this.graphDictionary[currentRoute].outbound
-        ).map(value => value + parentRouteDistance);
+        ).map(value => value + Number(routeDistance));
 
         const neighbors = locations.map((location, index) => [
           location,
