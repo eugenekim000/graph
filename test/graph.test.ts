@@ -28,12 +28,20 @@ describe('add graoh', () => {
   });
 
   it('should find number of trips with max stops', () => {
-    const maxTrip2 = graph.getNumTripsMax('C', 'C', 3);
-    expect(maxTrip2).toEqual(2);
+    const maxTrip = graph.getNumTripsMax('C', 'C', 3);
+    expect(maxTrip).toEqual(2);
   });
 
   it('should find number of trips with exact stops', () => {
-    const maxTrip2 = graph.getNumTripsExact('A', 'C', 4);
-    expect(maxTrip2).toEqual(3);
+    const maxTripExact = graph.getNumTripsExact('A', 'C', 4);
+    expect(maxTripExact).toEqual(3);
+  });
+
+  it.only('should find the length of the shortest route in distance', () => {
+    //const shortestRoute = graph.getShortestRoute('A', 'C');
+    const shortestRoute2 = graph.getShortestRoute('B', 'B');
+
+    //expect(shortestRoute).toEqual(9);
+    expect(shortestRoute2).toEqual(9);
   });
 });

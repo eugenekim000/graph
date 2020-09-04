@@ -1,10 +1,3 @@
-export const sum = (a: number, b: number) => {
-  if ('development' === process.env.NODE_ENV) {
-    console.log('boop');
-  }
-  return a + b;
-};
-
 export class Graph {
   graphDictionary: { [key: string]: Node };
 
@@ -54,7 +47,6 @@ export class Graph {
 
     while (queue.length > 0 && numberOfStops < maxStops) {
       let nextQueue: string[] = [];
-      console.log(queue);
 
       for (let i = 0; i < queue.length; i++) {
         if (queue[i] === finish) {
@@ -96,6 +88,61 @@ export class Graph {
     return numberOfStops !== exactStop
       ? 'NO SUCH ROUTE'
       : queue.filter(char => char === finish).length;
+  }
+
+  getShortestRoute(start: string, finish: string): number | string {
+    if (!this.graphDictionary[start]) return 'NO SUCH ROUTE';
+    const initialRoutes = Object.entries(
+      this.graphDictionary[start].outbound
+    ).map(routes => [...routes, start]);
+
+    let visitedHistory: { [key: string]: boolean } = {};
+    let queue = initialRoutes;
+    let shortestRoute = Infinity;
+
+    while (queue.length > 0) {
+      let nextQueue: (string | number)[][] = [];
+      console.log(queue, 'this is a qeue');
+      for (let i = 0; i < queue.length; i++) {
+        let currentRoute = queue[i][0];
+        let routeDistance = queue[i][1];
+        let parentRoute = queue[i][2];
+        let visitedKey = parentRoute.toString() + currentRoute.toString();
+
+        if (visitedHistory[visitedKey]) continue;
+        visitedHistory[visitedKey] = true;
+
+        if (currentRoute === finish) {
+          shortestRoute = Math.min(shortestRoute, Number(routeDistance));
+          continue;
+        }
+
+        const parentRouteDistance = this.graphDictionary[parentRoute].outbound[
+          currentRoute
+        ]; //2
+
+        const locations = Object.keys(
+          this.graphDictionary[currentRoute].outbound
+        );
+
+        const distance = Object.values(
+          this.graphDictionary[currentRoute].outbound
+        ).map(value => value + parentRouteDistance);
+
+        const neighbors = locations.map((location, index) => [
+          location,
+          distance[index],
+          currentRoute,
+        ]);
+
+        console.log(neighbors);
+
+        nextQueue = [...nextQueue, ...neighbors];
+      }
+      queue = nextQueue;
+    }
+
+    return shortestRoute === Infinity ? 'NO SUCH ROUTE' : shortestRoute;
   }
 }
 
